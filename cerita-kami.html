@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Cerita Kami - Kopi Street BAHAGIYA</title>
+    <script>
+        // Script di <head> untuk mencegah layar berkedip saat memuat tema
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark')
+        } else {
+          document.documentElement.classList.remove('dark')
+        }
+    </script>
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            -webkit-font-smoothing: antialiased;
+            /* Menyembunyikan kursor default untuk digantikan kursor kustom */
+            cursor: none;
+        }
+        .font-serif { font-family: 'DM Serif Display', serif; }
+        
+        /* -- ANIMASI & EFEK INTERAKTIF -- */
+        .navbar-sticky { transition: all 0.3s ease-in-out; }
+        
+        /* Animasi reveal saat scroll */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px) scale(0.95);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .reveal.visible { opacity: 1; transform: translateY(0) scale(1); }
+        
+        /* Kursor Kustom */
+        #cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #f59e0b; /* amber-500 */
+            border-radius: 50%;
+            position: fixed;
+            z-index: 9999;
+            pointer-events: none;
+            transition: transform 0.2s ease-out;
+        }
+        #cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #f59e0b; /* amber-500 */
+            border-radius: 50%;
+            position: fixed;
+            z-index: 9999;
+            pointer-events: none;
+            transition: all 0.3s ease-out;
+        }
+        #cursor-outline.hover {
+            transform: scale(1.5);
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-500">
+    
+    <!-- Kursor Kustom -->
+    <div id="cursor-dot"></div>
+    <div id="cursor-outline"></div>
+
+    <!-- 1. HEADER & NAVBAR -->
+    <header id="navbar" class="navbar-sticky fixed top-0 left-0 w-full z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg shadow-md dark:shadow-black/20">
+        <div class="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12 py-4">
+            <div class="flex items-center justify-between">
+                <a href="index.html" class="interactive-el text-xl font-bold font-serif transition-colors text-gray-900 dark:text-white" id="nav-brand">Kopi Street BAHAGIYA.</a>
+                <div class="flex items-center gap-4 sm:gap-6">
+                    <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600 dark:text-gray-300">
+                        <a href="index.html#menu" class="interactive-el transition-colors hover:text-amber-500 dark:hover:text-amber-400">Menu</a>
+                        <a href="index.html#kenapa-kami" class="interactive-el transition-colors hover:text-amber-500 dark:hover:text-amber-400">Kenapa Kami</a>
+                        <a href="https://maps.app.goo.gl/8m32peXuDZDJ21Cz6" target="_blank" rel="noopener noreferrer" class="interactive-el transition-colors hover:text-amber-500 dark:hover:text-amber-400">Lokasi</a>
+                    </nav>
+
+                    <button id="theme-toggle" type="button" class="interactive-el p-2 rounded-full text-gray-800 dark:text-gray-200 hover:bg-black/10 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        <span class="sr-only">Toggle theme</span>
+                        <svg class="h-5 w-5 hidden dark:block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+                        <svg class="h-5 w-5 block dark:hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                    </button>
+                    
+                    <!-- Tombol Hamburger untuk Mobile -->
+                    <button id="mobile-menu-button" class="md:hidden interactive-el p-2 rounded-md hover:bg-black/10 dark:hover:bg-gray-800">
+                        <svg id="menu-open-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>
+                        <svg id="menu-close-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+         <!-- Menu Mobile (awalnya tersembunyi) -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg w-full">
+            <nav class="flex flex-col items-center gap-4 py-6 text-base font-medium text-gray-800 dark:text-gray-200">
+                <a href="index.html#menu" class="interactive-el transition-colors hover:text-amber-500">Menu</a>
+                <a href="index.html#kenapa-kami" class="interactive-el transition-colors hover:text-amber-500">Kenapa Kami</a>
+                <a href="https://maps.app.goo.gl/8m32peXuDZDJ21Cz6" target="_blank" rel="noopener noreferrer" class="interactive-el transition-colors hover:text-amber-500">Lokasi</a>
+                <a href="cerita-kami.html" class="interactive-el transition-colors hover:text-amber-500 font-bold text-amber-500">Cerita Kami</a>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- 2. KONTEN UTAMA HALAMAN CERITA KAMI -->
+    <main class="overflow-hidden pt-24 sm:pt-32">
+        <div class="bg-gray-100 dark:bg-gray-900 py-24 sm:py-32">
+            <div class="mx-auto max-w-7xl px-6 lg:px-8">
+                <div class="mx-auto grid max-w-2xl grid-cols-1 gap-x-12 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2 lg:items-center">
+                    
+                    <div class="lg:col-start-2 lg:row-start-1 reveal">
+                        <p class="text-base font-semibold leading-7 text-amber-600 dark:text-amber-400">Cerita Kami</p>
+                        <h1 class="mt-2 font-serif text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-5xl">Lebih dari Sekadar Kopi</h1>
+                        <div class="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-300 space-y-6">
+                            <p>
+                                Berdiri sejak tahun 2019, <strong class="text-gray-800 dark:text-gray-100">Kopi Street BAHAGIYA</strong> hadir sebagai teman setia di tengah hiruk-pikuknya kawasan Rumah Sakit Yarsi Kota Pontianak. Selama lebih dari lima tahun, kami meracik kopi dengan sepenuh hati, menyuguhkan cita rasa yang tidak hanya nikmat tapi juga penuh kehangatan.
+                            </p>
+                            <p>
+                                Dari kopi klasik hingga racikan kekinian, semua kami sajikan dengan harga bersahabat dan pelayanan ramah khas UMKM lokal. Bagi kami, secangkir kopi bukan sekadar minuman—ia adalah penghubung cerita, semangat, dan kebahagiaan.
+                            </p>
+                             <p class="border-l-4 border-amber-500 dark:border-amber-400 pl-4 italic text-gray-700 dark:text-amber-100">
+                                Yuk, mampir dan rasakan sendiri hangatnya suasana serta rasa yang tak terlupakan di Kopi Street BAHAGIYA!
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-start-1 reveal" style="transition-delay: 150ms;">
+                        <img src="https://arsitagx-master-article.s3.ap-southeast-1.amazonaws.com/article-photo/586/desain-interior-warung-kopi-instagramable-1.jpg" alt="Suasana Kedai Kopi Bahagiya" class="w-full h-full max-h-[600px] object-cover rounded-3xl shadow-2xl shadow-gray-400/20 dark:shadow-black/30">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 5. FOOTER -->
+    <footer id="kontak" class="bg-gray-200 dark:bg-black" aria-labelledby="footer-heading">
+        <div class="mx-auto max-w-7xl px-6 pb-8 pt-16 sm:pt-24 lg:px-8">
+            <div class="xl:grid xl:grid-cols-3 xl:gap-8">
+                <div class="space-y-8">
+                    <h3 class="text-2xl font-bold font-serif text-gray-900 dark:text-white">Kopi Street BAHAGIYA</h3>
+                    <p class="text-sm leading-6 text-gray-600 dark:text-gray-400">Secangkir Kebahagiaan di Setiap Sudut Jalan.</p>
+                    <div class="flex space-x-6">
+                        <a href="#" class="interactive-el text-gray-500 dark:text-gray-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors"><span class="sr-only">Instagram</span><svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12.315 2c-4.42 0-7.8 3.38-7.8 7.8s3.38 7.8 7.8 7.8 7.8-3.38 7.8-7.8S16.735 2 12.315 2zM1.803 9.815C1.803 5.4 5.2 2 9.615 2h5.4c4.415 0 7.815 3.4 7.815 7.815v5.4c0 4.415-3.4 7.815-7.815 7.815h-5.4C5.2 22.83 1.803 19.43 1.803 15.215v-5.4zM12.315 17.115c-2.53 0-4.5-2.06-4.5-4.5s2.06-4.5 4.5-4.5 4.5 2.06 4.5 4.5-2.06 4.5-4.5 4.5zm0-7.5c-1.54 0-2.7 1.25-2.7 2.7s1.25 2.7 2.7 2.7 2.7-1.25 2.7-2.7-1.25-2.7-2.7-2.7zm4.5-1.8c-.5 0-.9.4-.9.9s.4.9.9.9.9-.4.9-.9-.4-.9-.9-.9z" clip-rule="evenodd" /></svg></a>
+                    </div>
+                </div>
+                 <div class="mt-16 grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0">
+                    <div class="md:grid md:grid-cols-2 md:gap-8">
+                        <div><h3 class="text-sm font-semibold leading-6 text-gray-900 dark:text-white">Jelajahi</h3><ul role="list" class="mt-6 space-y-4"><li><a href="index.html#menu" class="interactive-el text-sm leading-6 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Menu Kopi</a></li><li><a href="https://maps.app.goo.gl/8m32peXuDZDJ21Cz6" target="_blank" rel="noopener noreferrer" class="interactive-el text-sm leading-6 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Lokasi Kami</a></li><li><a href="#" class="interactive-el text-sm leading-6 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Promo</a></li></ul></div>
+                        <div class="mt-10 md:mt-0"><h3 class="text-sm font-semibold leading-6 text-gray-900 dark:text-white">Tentang</h3><ul role="list" class="mt-6 space-y-4"><li><a href="cerita-kami.html" class="interactive-el text-sm leading-6 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Cerita Kami</a></li><li><a href="#" class="interactive-el text-sm leading-6 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Karir</a></li></ul></div>
+                    </div>
+                    <div class="md:grid md:grid-cols-1 md:gap-8">
+                        <div><h3 class="text-sm font-semibold leading-6 text-gray-900 dark:text-white">Kontak</h3><ul role="list" class="mt-6 space-y-4"><li class="text-sm leading-6 text-gray-500 dark:text-gray-400">Jl. Tanjung Raya 2 No. 12,<br>Kota Pontianak</li><li class="text-sm leading-6 text-gray-500 dark:text-gray-400 "><a class="interactive-el hover:text-gray-900 dark:hover:text-white" href="mailto:halo@kopi-bahagiya.com">halo@kopi-bahagiya.com</a></li></ul></div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-16 border-t border-gray-900/10 dark:border-white/10 pt-8 sm:mt-20 lg:mt-24">
+                <p class="text-xs leading-5 text-gray-500 dark:text-gray-400">&copy; 2025 Kopi Street BAHAGIYA. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // --- Script untuk Animasi Reveal ---
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) { 
+                        entry.target.classList.add('visible'); 
+                        // Hentikan observing setelah elemen terlihat agar tidak berulang
+                        revealObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15 });
+            document.querySelectorAll('.reveal').forEach((el) => revealObserver.observe(el));
+
+            // --- Script untuk Toggle Tema Gelap/Terang ---
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            if (themeToggleBtn) {
+                themeToggleBtn.addEventListener('click', function() {
+                    if (document.documentElement.classList.contains('dark')) {
+                        document.documentElement.classList.remove('dark');
+                        localStorage.theme = 'light';
+                    } else {
+                        document.documentElement.classList.add('dark');
+                        localStorage.theme = 'dark';
+                    }
+                });
+            }
+            
+            // --- Script untuk Menu Mobile ---
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const openIcon = document.getElementById('menu-open-icon');
+            const closeIcon = document.getElementById('menu-close-icon');
+
+            if (mobileMenuButton) {
+                mobileMenuButton.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                    openIcon.classList.toggle('hidden');
+                    closeIcon.classList.toggle('hidden');
+                });
+            }
+
+            // --- Script untuk Kursor Kustom ---
+            const cursorDot = document.getElementById('cursor-dot');
+            const cursorOutline = document.getElementById('cursor-outline');
+
+            window.addEventListener('mousemove', (e) => {
+                const posX = e.clientX;
+                const posY = e.clientY;
+
+                cursorDot.style.left = `${posX}px`;
+                cursorDot.style.top = `${posY}px`;
+
+                cursorOutline.animate({
+                    left: `${posX}px`,
+                    top: `${posY}px`
+                }, { duration: 500, fill: "forwards" });
+            });
+            
+            // Tambahkan efek hover pada elemen interaktif
+            const interactiveElements = document.querySelectorAll('.interactive-el, button, a');
+            interactiveElements.forEach(el => {
+                el.addEventListener('mouseover', () => cursorOutline.classList.add('hover'));
+                el.addEventListener('mouseleave', () => cursorOutline.classList.remove('hover'));
+            });
+
+        });
+    </script>
+    <!-- Memuat skrip dari file eksternal -->
+    <script src="script.js" defer></script>
+</body>
+</html>
